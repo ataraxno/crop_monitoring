@@ -277,7 +277,7 @@ def Server(
     server_socket.listen()
     logger.info(f"Rasp is ready to service... ({HOST}:{PORT})\n")
 
-    return server_socket
+    return arduino, server_socket
 
 
 def main(args):
