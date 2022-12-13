@@ -257,16 +257,16 @@ def Server(
     while ready:
         if arduino.in_waiting != 0:
             content = arduino.readline()[:-2].decode()
-            if "actuator frequency OK" in content:
+            if "Scanning all addresses, please wait..." in content:
                 init = 1
-            if ("fail" or "not detected" or "error") in content and init == 1:
+            if "No sensors found, please check connections and restart the Arduino." in content:
                 raise ValueError("Arudino system needs to be checked.")
             if init:
                 logger.info(content)
-            if (content == "Arduino system is ready") and init:
+            if ("Total number of sensors found" in content) and init:
                 ready = 0
 
-        if time.time() - start > 5:  # when data is not coming
+        if time.time() - start > 30:  # when data is not coming
             logger.warning("There is no proper incoming data from the Arduino.")
             ready = 0
 
@@ -399,7 +399,7 @@ if __name__ == "__main__":
     # Arduino address
     arduino = None
     USB = "/dev/ttyACM0"  # fixed
-    BRATE = 9600  # fixed
+    BRATE = 115200  # fixed
 
     epi_name = f"Server{get_KST_date()}"
 

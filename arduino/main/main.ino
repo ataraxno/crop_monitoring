@@ -215,7 +215,7 @@ void setup() {
 
   // Quickly Scan the Address Space
   Serial.println("Scanning all addresses, please wait...");
-  Serial.println("Sensor Address, Protocol Version, Sensor Vendor, Sensor Model, "
+  Serial.println("Address, Protocol Version, Vendor, Model, "
                  "Sensor Version, Sensor ID");
 
   for (byte i = 0; i < 62; i++) {
@@ -236,12 +236,11 @@ void setup() {
     while (true) { delay(10); }  // do nothing forever
   }
 
-  Serial.println();
-  Serial.println("Time Elapsed (s), Measurement Type, Sensor Address, Est Measurement "
-                 "Time (s), Number Measurements, "
-                 "Real Measurement Time (ms), Measurement 1, Measurement 2, ... etc.");
-  Serial.println(
-    "-------------------------------------------------------------------------------");
+  // Serial.println("Time Elapsed (s), Measurement Type, Sensor Address, Est Measurement "
+  //                "Time (s), Number Measurements, "
+  //                "Real Measurement Time (ms), Measurement 1, Measurement 2, ... etc.");
+  // Serial.println(
+    // "-------------------------------------------------------------------------------");
 }
 
 void loop() {
@@ -254,7 +253,7 @@ void loop() {
         // Serial.print(millis() / 1000);
         Serial.print(millis());
         Serial.print(", ");
-        takeMeasurement(addr, commands[a]);
+        // takeMeasurement(addr, commands[a]);
         Serial.println();
       }
     }
