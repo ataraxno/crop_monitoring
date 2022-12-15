@@ -11,6 +11,20 @@
 #define POWER_PIN -1       /*!< The sensor power pin (or -1 if not switching power) */
 #define WAKE_DELAY 0       /*!< Extra time needed for the sensor to wake (0-100ms) */
 
+String input ="";
+
+int sensorPinP = A4;
+int sensorPinN = A5;
+int Vpositive = 0;
+int Vnegative = 0;
+float Vdiff = 0;
+float SensorValue = 0;
+
+float map(float x, float in_min, float in_max, float out_min, float out_max)
+{
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 /** Define the SDI-12 bus */
 SDI12 mySDI12(DATA_PIN);
 
@@ -244,20 +258,33 @@ void setup() {
 }
 
 void loop() {
-  String commands[] = {"", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
-  for (uint8_t a = 0; a < 1; a++) {
-    // measure one at a time
-    for (byte i = 0; i < 62; i++) {
-      char addr = decToChar(i);
-      if (isActive[i]) {
-        // Serial.print(millis() / 1000);
-        Serial.print(millis());
-        Serial.print(", ");
-        // takeMeasurement(addr, commands[a]);
-        Serial.println();
+  if(Serial && Serial.available()) {
+    input = Serial.readStringUntil('\n');
+    if (input == "sensing") {
+      for (byte i = 0; i < 62; i++) {
+        char addr = decToChar(i);
+        if (isActive[i]) {
+          takeMeasurement(addr, "");
+        }
       }
+      Vpositive = analogRead(sensorPinP);
+      Vnegative = analogRead(sensorPinN);
+      Vdiff = map(float(Vpositive) - float(Vnegative), 0, 1023, 0, 5);
+      SensorValue = Vdiff*5000;
+      Serial.print(SensorValue);
+      Serial.println("W*m-2");
+      Serial.println("___");
+    }
+    else if (input == "control") {
+      // nothing, later pump maybe?
+    }
+    else {
+      Serial.println("wrong. retry.");
     }
   }
-
-  delay(10000L);  // wait ten seconds between measurement attempts.
+  else if (!Serial) { // Check if Serial is available... if not,
+    Serial.end();      // Close serial port
+    delay(100);
+    Serial.begin(SERIAL_BAUD); // Reenable serial again
+  }
 }
