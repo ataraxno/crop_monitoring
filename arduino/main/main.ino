@@ -265,6 +265,7 @@ void loop() {
         char addr = decToChar(i);
         if (isActive[i]) {
           takeMeasurement(addr, "");
+          Serial.println(" ");
         }
       }
       Vpositive = analogRead(sensorPinP);
@@ -273,6 +274,7 @@ void loop() {
       SensorValue = Vdiff*5000;
       Serial.print(SensorValue);
       Serial.println("W*m-2");
+      // NOTE: load cell & CO2
       Serial.println("___");
     }
     else if (input == "control") {
